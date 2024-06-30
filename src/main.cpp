@@ -5,10 +5,9 @@
 
 void setup()
 {
-	// FastLED.addLeds<chip type, pin on Arduino, RGB
-	// sequence thats dependant on strip>(name, no of
-	// addresable nodes);
-	FastLED.addLeds<WS2812, DataPin, RGB>(leds, NUM_LEDS); // WS2815 is used but WS2812 works, but need RGB
+	FastLED.addLeds<WS2812, DataPin, RGB>(leds, NUM_LEDS); // FastLED.addLeds<chip type, pin on Arduino, RGB
+	                                                       // sequence thats dependant on strip>(name, no of
+	                                                       // addresable nodes);
 
 	pinMode(Mode_Button, INPUT_PULLUP);
 	pinMode(Up_Button, INPUT_PULLUP);
@@ -103,30 +102,21 @@ void loop()
 		RGB_Without_Fading();
 		break;
 	case 2:
-		RGB_With_Fading();
-		break;
-	case 3:
 		Random_Without_Fading();
 		break;
+	case 3:
+		Fireflies_Random_RGB();
+		break;
 	case 4:
-		RGB_Alternating();
+		Fireflies_Same_RGB();
 		break;
 	case 5:
-		Random_Alternating();
+		Single_Colour_RGB();
 		break;
 	case 6:
-		RGB_Contrasting_Collisions();
+		Single_Colour_Warm_Orange();
 		break;
 	case 7:
-		RGB_Twins();
-		break;
-	case 8:
-		RGB_Contrasting_Double_Twins();
-		break;
-	case 9:
-		RGB_Quartet();
-		break;
-	case 10:
 		Random_Twins();
 		break;
 	default:
@@ -148,6 +138,10 @@ void loop()
 // 10) Random_Twins();
 // 11) RGB_Alternating();
 // 12) Random_Alternating();
+// 13) Single_Colour_RGB();
+// 14) Single_Colour_Warm_Orange();
+// 15) Fireflies_Random_RGB();
+// 16) Fireflies_Same_RGB();
 
 void RGB_Without_Fading()
 {
@@ -471,6 +465,76 @@ void Random_Alternating()
 		FastLED.show();
 
 		Tick_Tock = !Tick_Tock;
+
+		previousMillis = presentMillis;
+	}
+}
+
+void Single_Colour_RGB()
+{
+	if (presentMillis - previousMillis >= 30 * delay_multiplier) {
+		for (int i = 0; i < NUM_LEDS; i++) {
+			leds[i] = CHSV(hue, 255, brightness);
+		}
+		FastLED.show();
+		hue++;
+		previousMillis = presentMillis;
+	}
+}
+
+void Single_Colour_Warm_Orange()
+{
+	for (int i = 0; i < NUM_LEDS; i++) {
+		leds[i] = CHSV(8, 255, brightness);
+	}
+	FastLED.show();
+}
+
+void Fireflies_Random_RGB()
+{
+	if (presentMillis - previousMillis_for_fading >= 50) {
+		uint8_t brightness_for_fade = map(brightness, brightness_min, brightness_max, 5, 10);
+		leds.fadeToBlackBy(brightness_for_fade);
+		FastLED.show();
+		previousMillis_for_fading = presentMillis;
+	}
+
+	if (presentMillis - previousMillis >= random(120, 240) * delay_multiplier) {
+		for (int i = 0; i < random(0, NUM_LEDS / 2); i++) {
+			leds[random(0, NUM_LEDS)] = CHSV(random(0, 256), 255, brightness);
+		}
+
+		FastLED.show();
+
+		previousMillis = presentMillis;
+	}
+}
+
+void Fireflies_Same_RGB()
+{
+	if (presentMillis - previousMillis_for_fading >= 40) {
+		uint8_t brightness_for_fade = map(brightness, brightness_min, brightness_max, 5, 10);
+		leds.fadeToBlackBy(brightness_for_fade);
+		FastLED.show();
+		previousMillis_for_fading = presentMillis;
+	}
+
+	if (presentMillis - previousMillis >= random(60, 120) * delay_multiplier) {
+		uint8_t hue_lower = hue - 8;
+		uint8_t hue_upper = hue + 8;
+		if (Tick_Tock == true) {
+			hue++;
+			Tick_Tock = !Tick_Tock;
+		}
+		else {
+			Tick_Tock = !Tick_Tock;
+		}
+
+		for (int i = 0; i < random(0, NUM_LEDS / 2); i++) {
+			leds[random(0, NUM_LEDS)] = CHSV(random(hue_lower, hue_upper), 255, brightness);
+		}
+
+		FastLED.show();
 
 		previousMillis = presentMillis;
 	}

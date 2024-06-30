@@ -1,5 +1,5 @@
 uint8_t hue = 0;
-uint8_t brightness = 80;      // Default brightness is 80
+uint8_t brightness = 255;     // Default brightness is 255
 uint8_t brightness_min = 55;  // Min brightness is 55
 uint8_t brightness_max = 255; // Max brightness is 255
 
@@ -14,7 +14,7 @@ int LED_ID_3 = 0;
 bool Tick_Tock = LOW;
 
 unsigned long previousMillis = 0;
-// unsigned long previousMillis_for_fading = 0;
+unsigned long previousMillis_for_fading = 0;
 unsigned long presentMillis = 0;
 
 int Mode = 0;
@@ -35,6 +35,10 @@ CRGBArray<NUM_LEDS> leds; // CRGBArray<no of addresable nodes> name;
 // 10) Random_Twins();
 // 11) RGB_Alternating();
 // 12) Random_Alternating();
+// 13) Single_Colour_RGB();
+// 14) Single_Colour_Warm_Orange();
+// 15) Fireflies_Random_RGB();
+// 16) Fireflies_Same_RGB();
 
 void RGB_Without_Fading();
 
@@ -61,5 +65,13 @@ void Random_Twins();
 void RGB_Alternating();
 
 void Random_Alternating();
+
+void Single_Colour_RGB();
+
+void Single_Colour_Warm_Orange();
+
+void Fireflies_Random_RGB();
+
+void Fireflies_Same_RGB();
 
 void speed_mode_indicator();
